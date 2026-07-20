@@ -418,68 +418,72 @@
         }
 
         function loadKitTemplateForPacking() {
-            const typeCode = document.getElementById('packKitTypeSelect').value;
-            const packingArea = document.getElementById('packingArea');
-            const tbody = document.getElementById('packingTableBody');
+    const typeCode = document.getElementById('packKitTypeSelect').value;
+    const packingArea = document.getElementById('packingArea');
+    const tbody = document.getElementById('packingTableBody');
 
-            if (!typeCode) { packingArea.classList.add('hidden'); return; }
+    if (!typeCode) { packingArea.classList.add('hidden'); return; }
 
-            const filteredMeds = globalData.meds.filter(m => String(m.type_code).trim().toLowerCase() === String(typeCode).trim().toLowerCase());
-            tbody.innerHTML = '';
-            
-            if (filteredMeds.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-rose-500 font-bold">ไม่พบรายการยาในประเภทชุดยานี้ (โปรดเช็กคอลัมน์ type_code ใน Google Sheets)</td></tr>`;
-            } else {
-                filteredMeds.forEach((m) => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td class="px-4 py-2 font-medium">${m.generic_name}</td>
-                            <td class="px-4 py-2">${m.strength}</td>
-                            <td class="px-4 py-2 text-center">${m.dosage_form}</td>
-                            <td class="px-4 py-2 text-center font-bold text-slate-700">${m.std_qty}</td>
-                            <td class="px-4 py-2"><input type="date" class="pack-exp-date w-full border rounded px-2 py-1" required></td>
-                            <td class="px-4 py-2"><input type="number" class="pack-actual-qty w-full border rounded px-2 py-1 text-center font-bold text-teal-700" value="${m.std_qty}"></td>
-                        </tr>
-                    `;
-                });
-            }
-            packingArea.classList.remove('hidden');
-        }
+    const filteredMeds = globalData.meds.filter(m => String(m.type_code).trim().toLowerCase() === String(typeCode).trim().toLowerCase());
+    tbody.innerHTML = '';
+    
+    if (filteredMeds.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-rose-500 font-bold">ไม่พบรายการยาในประเภทชุดยานี้ (โปรดเช็กคอลัมน์ type_code ใน Google Sheets)</td></tr>`;
+    } else {
+        filteredMeds.forEach((m) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td class="px-4 py-2 font-medium">${m.generic_name}</td>
+                    <td class="px-4 py-2">${m.strength}</td>
+                    <td class="px-4 py-2 text-center">${m.dosage_form}</td>
+                    <td class="px-4 py-2 text-center font-bold text-slate-700">${m.std_qty}</td>
+                    <td class="px-4 py-2"><input type="date" class="pack-exp-date w-full border rounded px-2 py-1" required></td>
+                    <td class="px-4 py-2"><input type="number" class="pack-actual-qty w-full border rounded px-2 py-1 text-center font-bold text-teal-700" value="${m.std_qty}"></td>
+                </tr>
+            `;
+        });
+    }
+    packingArea.classList.remove('hidden');
+}
 
         function processSavePacking() {
-            const typeCode = document.getElementById('packKitTypeSelect').value;
-            const packer = document.getElementById('packerName').value.trim();
-            const pharmacist = document.getElementById('pharmacistName').value.trim();
+    const typeCode = document.getElementById('packKitTypeSelect').value;
+    const packer = document.getElementById('packerName').value.trim();
+    const pharmacist = document.getElementById('pharmacistName').value.trim();
 
-            if (!typeCode || !packer || !pharmacist) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+    if (!typeCode || !packer || !pharmacist) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
 
-            const rows = document.querySelectorAll('#packingTableBody tr');
-            let items = [];
-            let minExpDate = null;
-            let isValid = true;
-            const filteredMeds = globalData.meds.filter(m => String(m.type_code).trim().toLowerCase() === String(typeCode).trim().toLowerCase());
+    const rows = document.querySelectorAll('#packingTableBody tr');
+    let items = [];
+    let minExpDate = null;
+    let isValid = true;
+    
+    // ✅ ย้ายการดึงรายการยาชนิดนี้มาไว้ตรงนี้ก่อนลูป
+    const filteredMeds = globalData.meds.filter(m => String(m.type_code).trim().toLowerCase() === String(typeCode).trim().toLowerCase());
 
-            rows.forEach((row, i) => {
-                const expInput = row.querySelector('.pack-exp-date').value;
-                const topupInput = row.querySelector('.pack-actual-qty').value; // จำนวนจัดเพิ่มจริง
-                
-                if (!expInput) isValid = false;
-                if (expInput) {
-                    const currentExp = new Date(expInput);
-                    if (!minExpDate || currentExp < minExpDate) minExpDate = currentExp;
-                }
-                
-                items.push({
-                    generic_name: filteredMeds[i].generic_name,
-                    strength: filteredMeds[i].strength,
-                    std_qty: filteredMeds[i].std_qty,            // จำนวนเต็มมาตรฐาน (เช่น 40)
-                    topup_qty: Number(topupInput) || 0,            // จำนวนจัดเติมเพิ่มจริงรอบนี้ (เช่น 20)
-                    packed_qty: filteredMeds[i].std_qty,           // คงไว้สำหรับระบบเดิมเพื่อไม่ให้กระทบ
-                    exp_date: expInput
-                });
-            });
+    rows.forEach((row, i) => {
+        const expInput = row.querySelector('.pack-exp-date').value;
+        const topupInput = row.querySelector('.pack-actual-qty').value;
+        
+        if (!expInput) isValid = false;
+        if (expInput) {
+            const currentExp = new Date(expInput);
+            if (!minExpDate || currentExp < minExpDate) minExpDate = currentExp;
+        }
+        
+        items.push({
+            generic_name: filteredMeds[i].generic_name,
+            strength: filteredMeds[i].strength,
+            std_qty: filteredMeds[i].std_qty,
+            topup_qty: Number(topupInput) || 0,
+            packed_qty: filteredMeds[i].std_qty,
+            exp_date: expInput
+        });
+    });
 
-            if (!isValid) { alert('กรุณาระบุวันหมดอายุยาทุกรายการ'); return; }
+    if (!isValid) { alert('กรุณาระบุวันหมดอายุยาทุกรายการ'); return; }
+
+    // ... (ส่วนที่เหลือของฟังก์ชันคงเดิม) ...
 
             const offsetMonths = parseInt(localStorage.getItem('em_exp_offset_months') || '6', 10);
             let calculatedKitExp = new Date(minExpDate);

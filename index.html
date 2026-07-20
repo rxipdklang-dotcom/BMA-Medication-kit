@@ -69,7 +69,7 @@
 
             <div id="packingArea" class="bg-white rounded-xl shadow-sm border theme-teal-border p-6 hidden">
                 <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border">
-                    ส่วนที่ 2: รายการยาในชุด (กรอกวันหมดอายุและจำนวน)
+                    ส่วนที่ 2: รายการยาในชุด (กรอกวันหมดอายุและจำนวนที่จัดเพิ่ม)
                 </h2>
                 <div class="overflow-x-auto rounded-lg border border-slate-200 mb-6">
                     <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -78,9 +78,9 @@
                                 <th class="px-4 py-3 text-left">ชื่อยา</th>
                                 <th class="px-4 py-3 text-left">ความแรง</th>
                                 <th class="px-4 py-3 text-center">รูปแบบ</th>
-                                <th class="px-4 py-3 text-center w-20">จำนวนstd</th>
+                                <th class="px-4 py-3 text-center w-28">จำนวนมาตรฐาน</th>
                                 <th class="px-4 py-3 text-left w-40">Exp ยา</th>
-                                <th class="px-4 py-3 text-left w-28">จัดจริง</th>
+                                <th class="px-4 py-3 text-center w-32">จัดเติมเพิ่ม (Top-up)</th>
                             </tr>
                         </thead>
                         <tbody id="packingTableBody" class="divide-y divide-slate-200 bg-white"></tbody>
@@ -180,6 +180,18 @@
                 </div>
             </div>
 
+            <!-- กล่อง Re-print ด่วนด้วยการยิงบาร์โค้ด -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <span class="text-lg">🔍</span>
+                    <label class="text-sm font-medium text-slate-700 whitespace-nowrap">ยิงบาร์โค้ด Re-print ด่วน:</label>
+                </div>
+                <input type="text" id="quickReprintBoxId" 
+                       onkeypress="if(event.key === 'Enter') { reprintByBoxId(this.value.trim().toUpperCase()); this.value=''; }" 
+                       placeholder="สแกนหรือกรอก BOX ID แล้วกด Enter" 
+                       class="w-full sm:max-w-xs rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono uppercase focus:ring-2 focus:ring-teal-500">
+            </div>
+
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="overflow-x-auto text-sm">
                     <table class="min-w-full divide-y divide-slate-200">
@@ -190,6 +202,7 @@
                                 <th class="px-4 py-3 text-left">วันหมดอายุชุดยา</th>
                                 <th class="px-4 py-3 text-left">หน่วยงานที่อยู่</th>
                                 <th class="px-4 py-3 text-left">สถานะ</th>
+                                <th class="px-4 py-3 text-center">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody id="dashTableBody" class="divide-y divide-slate-200 bg-white"></tbody>
@@ -296,18 +309,18 @@
                     <div><b>วันที่จัดชุด:</b> <span id="printPackDate">-</span></div>
                     <div><b>วันหมดอายุกล่อง:</b> <span id="printBoxExp" class="text-red-700 font-extrabold text-sm">-</span></div>
                 </div>
-                <!-- ✅ จุดที่ 2: ปรับความกว้างคอลัมน์ ความแรง เป็น w-32 -->
-<table class="w-full border-collapse border border-slate-400 text-left text-xs mb-3">
-    <thead>
-        <tr class="bg-slate-200">
-            <th class="border border-slate-400 p-1">รายการยา</th>
-            <th class="border border-slate-400 p-1 text-center w-32">ความแรง</th> <!-- เปลี่ยนจาก w-16 เป็น w-32 -->
-            <th class="border border-slate-400 p-1 text-center w-10">บรรจุ</th>
-            <th class="border border-slate-400 p-1 text-center w-28">Exp ยา</th>
-        </tr>
-    </thead>
-    <tbody id="printTableBody"></tbody>
-</table>
+                <!-- ตารางพิมพ์ฉลากหน้ากล่อง -->
+                <table class="w-full border-collapse border border-slate-400 text-left text-xs mb-3">
+                    <thead>
+                        <tr class="bg-slate-200">
+                            <th class="border border-slate-400 p-1">รายการยา</th>
+                            <th class="border border-slate-400 p-1 text-center w-32">ความแรง</th>
+                            <th class="border border-slate-400 p-1 text-center w-10">บรรจุ</th>
+                            <th class="border border-slate-400 p-1 text-center w-28">Exp ยา</th>
+                        </tr>
+                    </thead>
+                    <tbody id="printTableBody"></tbody>
+                </table>
             </div>
             <div class="border-t border-slate-400 pt-2 mt-auto">
                 <div class="grid grid-cols-2 gap-4 text-xs">
@@ -377,7 +390,7 @@
             return `${thaiMonths[date.getMonth()]}-${date.getFullYear() + 543}`;
         }
 
-        // แปลงเป็น วัน/เดือน/พ.ศ. (ใช้สำหรับ วันหมดอายุยาแต่ละตัว)
+        // แปลงเป็น วัน/เดือน/พ.ศ. (ใช้สำหรับ วันที่จัดชุด และ วันหมดอายุยาแต่ละตัว)
         function formatFullThaiDate(dateString) {
             if (!dateString) return "-";
             const date = new Date(dateString);
@@ -423,9 +436,9 @@
                             <td class="px-4 py-2 font-medium">${m.generic_name}</td>
                             <td class="px-4 py-2">${m.strength}</td>
                             <td class="px-4 py-2 text-center">${m.dosage_form}</td>
-                            <td class="px-4 py-2 text-center font-bold">${m.std_qty}</td>
+                            <td class="px-4 py-2 text-center font-bold text-slate-700">${m.std_qty}</td>
                             <td class="px-4 py-2"><input type="date" class="pack-exp-date w-full border rounded px-2 py-1" required></td>
-                            <td class="px-4 py-2"><input type="number" class="pack-actual-qty w-full border rounded px-2 py-1 text-center font-bold" value="${m.std_qty}"></td>
+                            <td class="px-4 py-2"><input type="number" class="pack-actual-qty w-full border rounded px-2 py-1 text-center font-bold text-teal-700" value="${m.std_qty}"></td>
                         </tr>
                     `;
                 });
@@ -448,16 +461,20 @@
 
             rows.forEach((row, i) => {
                 const expInput = row.querySelector('.pack-exp-date').value;
-                const qtyInput = row.querySelector('.pack-actual-qty').value;
+                const topupInput = row.querySelector('.pack-actual-qty').value; // จำนวนจัดเพิ่มจริง
+                
                 if (!expInput) isValid = false;
                 if (expInput) {
                     const currentExp = new Date(expInput);
                     if (!minExpDate || currentExp < minExpDate) minExpDate = currentExp;
                 }
+                
                 items.push({
                     generic_name: filteredMeds[i].generic_name,
                     strength: filteredMeds[i].strength,
-                    packed_qty: qtyInput,
+                    std_qty: filteredMeds[i].std_qty,            // จำนวนเต็มมาตรฐาน (เช่น 40)
+                    topup_qty: Number(topupInput) || 0,            // จำนวนจัดเติมเพิ่มจริงรอบนี้ (เช่น 20)
+                    packed_qty: filteredMeds[i].std_qty,           // คงไว้สำหรับระบบเดิมเพื่อไม่ให้กระทบ
                     exp_date: expInput
                 });
             });
@@ -485,7 +502,7 @@
             };
 
             document.getElementById('btnSavePack').disabled = true;
-            document.getElementById('btnSavePack').innerText = "กำลังบันทึกลลง Google Sheets...";
+            document.getElementById('btnSavePack').innerText = "กำลังบันทึกลง Google Sheets...";
 
             fetch(GAS_URL, {
                 method: 'POST',
@@ -506,36 +523,71 @@
         }
 
         function setupStickerPrint(rec) {
-    const hospName = localStorage.getItem('em_hosp_name') || "โรงพยาบาลกลาง";
-    const logo = localStorage.getItem('em_hosp_logo') || "";
+            const hospName = localStorage.getItem('em_hosp_name') || "โรงพยาบาลกลาง";
+            const logo = localStorage.getItem('em_hosp_logo') || "";
 
-    document.getElementById('printHospTitle').innerText = hospName;
-    if (logo) document.getElementById('printLogo').src = logo;
+            document.getElementById('printHospTitle').innerText = hospName;
+            if (logo) document.getElementById('printLogo').src = logo;
 
-    document.getElementById('printBoxId').innerText = rec.box_id;
-    
-    // ✅ จุดที่ 1: แปลงวันที่จัดชุดให้เป็นรูปแบบ วัน/เดือน/พ.ศ. (เช่น 20/07/2569)
-    document.getElementById('printPackDate').innerText = formatFullThaiDate(rec.pack_date);
-    
-    document.getElementById('printBoxExp').innerText = formatThaiMonthYear(rec.kit_exp_date);
-    document.getElementById('printSignPacker').innerText = rec.packer;
-    document.getElementById('printSignRx').innerText = rec.pharmacist;
+            document.getElementById('printBoxId').innerText = rec.box_id;
+            
+            // แสดงวันที่จัดชุดในรูปแบบ วัน/เดือน/พ.ศ.
+            document.getElementById('printPackDate').innerText = formatFullThaiDate(rec.pack_date);
+            document.getElementById('printBoxExp').innerText = formatThaiMonthYear(rec.kit_exp_date);
+            document.getElementById('printSignPacker').innerText = rec.packer;
+            document.getElementById('printSignRx').innerText = rec.pharmacist;
 
-    const printTbody = document.getElementById('printTableBody');
-    printTbody.innerHTML = '';
-    rec.items.forEach(item => {
-        printTbody.innerHTML += `
-            <tr>
-                <td class="border border-slate-400 p-1">${item.generic_name}</td>
-                <td class="border border-slate-400 p-1 text-center font-medium">${item.strength}</td>
-                <td class="border border-slate-400 p-1 text-center font-bold">${item.packed_qty}</td>
-                <td class="border border-slate-400 p-1 text-center">${formatFullThaiDate(item.exp_date)}</td>
-            </tr>
-        `;
-    });
+            const printTbody = document.getElementById('printTableBody');
+            printTbody.innerHTML = '';
+            rec.items.forEach(item => {
+                // แสดง std_qty (บรรจุมาตรฐาน) เสมอบนหน้ากล่อง
+                const displayQty = item.std_qty || item.packed_qty;
+                printTbody.innerHTML += `
+                    <tr>
+                        <td class="border border-slate-400 p-1">${item.generic_name}</td>
+                        <td class="border border-slate-400 p-1 text-center font-medium">${item.strength}</td>
+                        <td class="border border-slate-400 p-1 text-center font-bold">${displayQty}</td>
+                        <td class="border border-slate-400 p-1 text-center">${formatFullThaiDate(item.exp_date)}</td>
+                    </tr>
+                `;
+            });
 
-    JsBarcode("#barcodeCanvas", rec.box_id, { format: "CODE128", width: 1.5, height: 35, displayValue: false });
-}
+            JsBarcode("#barcodeCanvas", rec.box_id, { format: "CODE128", width: 1.5, height: 35, displayValue: false });
+        }
+
+        // ฟังก์ชันสั่ง Re-print ด้วย BOX ID (อ่านจาก items_json)
+        function reprintByBoxId(boxId) {
+            const rec = globalData.records.find(r => String(r.box_id).trim().toUpperCase() === String(boxId).trim().toUpperCase());
+            
+            if (!rec) {
+                alert("ไม่พบข้อมูลชุดยา " + boxId + " ในระบบ");
+                return;
+            }
+
+            let itemsArray = rec.items;
+            if (typeof rec.items_json === 'string') {
+                try {
+                    itemsArray = JSON.parse(rec.items_json);
+                } catch (e) {
+                    console.error("Parse JSON failed", e);
+                }
+            }
+
+            const printPayload = {
+                box_id: rec.box_id,
+                pack_date: rec.pack_date,
+                kit_exp_date: rec.kit_exp_date,
+                packer: rec.packer || "-",
+                pharmacist: rec.pharmacist || "-",
+                items: itemsArray || []
+            };
+
+            setupStickerPrint(printPayload);
+
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        }
 
         // ระบบเปิด/ปิด กล้องสแกนมือถือ
         function toggleCameraScanner() {
@@ -609,7 +661,16 @@
                         <td class="px-4 py-3">${r.type_code}</td>
                         <td class="px-4 py-3">${formatThaiMonthYear(r.kit_exp_date)}</td>
                         <td class="px-4 py-3">${r.dept_name}</td>
-                        <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs ${r.status === 'Available' ? 'bg-emerald-100 text-emerald-800' : 'bg-cyan-100 text-cyan-800'}">${r.status === 'Available' ? 'พร้อมใช้' : 'จ่ายแล้ว'}</span></td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-1 rounded-full text-xs ${r.status === 'Available' ? 'bg-emerald-100 text-emerald-800' : 'bg-cyan-100 text-cyan-800'}">
+                                ${r.status === 'Available' ? 'พร้อมใช้' : 'จ่ายแล้ว'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick="reprintByBoxId('${r.box_id}')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 rounded text-xs border border-slate-300 font-medium transition flex items-center gap-1 mx-auto">
+                                🖨️ พิมพ์ซ้ำ
+                            </button>
+                        </td>
                     </tr>
                 `;
             });

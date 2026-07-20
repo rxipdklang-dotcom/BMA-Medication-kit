@@ -120,14 +120,13 @@
             </div>
         </section>
 
-        <!-- 2. TAB: บันทึกจ่ายชุดยาฉุกเฉิน (มีกล้องสแกนมือถือ) -->
+        <!-- 2. TAB: บันทึกจ่ายชุดยาฉุกเฉิน -->
         <section id="dispense-tab" class="tab-content space-y-6 hidden">
             <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6 max-w-2xl mx-auto">
                 <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border">
                     📦 บันทึกจ่ายชุดยาฉุกเฉิน
                 </h2>
                 
-                <!-- ส่วนสแกนด้วยกล้องมือถือ -->
                 <div class="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
                     <button onclick="toggleCameraScanner()" id="btnToggleCam" class="w-full py-3 bg-cyan-700 text-white rounded-lg font-bold shadow hover:bg-cyan-800 transition flex items-center justify-center gap-2">
                         📷 เปิด/ปิด กล้องมือถือสแกนบาร์โค้ด
@@ -180,7 +179,6 @@
                 </div>
             </div>
 
-            <!-- กล่อง Re-print ด่วนด้วยการยิงบาร์โค้ด -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center justify-between">
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <span class="text-lg">🔍</span>
@@ -213,7 +211,6 @@
 
         <!-- 4. TAB: ตั้งค่าระบบ -->
         <section id="setting-tab" class="tab-content space-y-6 hidden">
-            <!-- 4.1 ตั้งค่าเกณฑ์คำนวณวันหมดอายุชุดยา -->
             <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6">
                 <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border flex items-center gap-2">
                     ⏳ ตั้งค่าเกณฑ์คำนวณวันหมดอายุชุดยา
@@ -232,7 +229,6 @@
                 </div>
             </div>
 
-            <!-- 4.2 จัดการข้อมูลโรงพยาบาลและโลโก้ -->
             <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6">
                 <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border flex items-center gap-2">
                     🏥 จัดการข้อมูลโรงพยาบาลและโลโก้
@@ -257,7 +253,6 @@
                 </div>
             </div>
 
-            <!-- 4.3 ระบบตั้งค่าขนาดเอกสารติดหน้ากล่องยา -->
             <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6">
                 <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border flex items-center gap-2">
                     🖨️ ระบบตั้งค่าขนาดเอกสารติดหน้ากล่องยา
@@ -309,7 +304,6 @@
                     <div><b>วันที่จัดชุด:</b> <span id="printPackDate">-</span></div>
                     <div><b>วันหมดอายุกล่อง:</b> <span id="printBoxExp" class="text-red-700 font-extrabold text-sm">-</span></div>
                 </div>
-                <!-- ตารางพิมพ์ฉลากหน้ากล่อง -->
                 <table class="w-full border-collapse border border-slate-400 text-left text-xs mb-3">
                     <thead>
                         <tr class="bg-slate-200">
@@ -338,7 +332,6 @@
     </footer>
 
     <script>
-        // 🔴 URL ของ Google Apps Script
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxcRLZ58Qs24s5LAPPF1lmxZUhk8ibKrLa2_TGj9lRbRxEdTqFkGefPFeweHVWU53GIbg/exec";
 
         let globalData = { kits: [], meds: [], depts: [], records: [] };
@@ -364,7 +357,6 @@
             }
         }
 
-        // ดึงข้อมูล Master Data และ Records จาก Google Sheets
         function fetchInitialData() {
             if (!GAS_URL || GAS_URL === "" || GAS_URL.includes("YOUR_GOOGLE_APPS_SCRIPT")) {
                 alert("กรุณาใส่ Web App URL ของ Google Apps Script ในไฟล์ก่อนใช้งาน");
@@ -381,7 +373,6 @@
                 .catch(err => alert("ไม่สามารถดึงข้อมูลจาก Google Sheets ได้: " + err));
         }
 
-        // แปลงเป็น เดือน-พ.ศ. (ใช้สำหรับ วันหมดอายุกล่อง)
         function formatThaiMonthYear(dateString) {
             if (!dateString) return "-";
             const date = new Date(dateString);
@@ -390,7 +381,6 @@
             return `${thaiMonths[date.getMonth()]}-${date.getFullYear() + 543}`;
         }
 
-        // แปลงเป็น วัน/เดือน/พ.ศ. (ใช้สำหรับ วันที่จัดชุด และ วันหมดอายุยาแต่ละตัว)
         function formatFullThaiDate(dateString) {
             if (!dateString) return "-";
             const date = new Date(dateString);
@@ -417,79 +407,86 @@
             });
         }
 
+        // 🌟 ปรับปรุงการเปรียบเทียบ type_code ให้ยืดหยุ่น ยอมรับข้อความที่ตัดแต่งช่องว่างและตัวพิมพ์เล็ก-ใหญ่
+        function cleanStr(str) {
+            return String(str || '').trim().toLowerCase().replace(/\s+/g, '');
+        }
+
         function loadKitTemplateForPacking() {
-    const typeCode = document.getElementById('packKitTypeSelect').value;
-    const packingArea = document.getElementById('packingArea');
-    const tbody = document.getElementById('packingTableBody');
+            const typeCode = document.getElementById('packKitTypeSelect').value;
+            const packingArea = document.getElementById('packingArea');
+            const tbody = document.getElementById('packingTableBody');
 
-    if (!typeCode) { packingArea.classList.add('hidden'); return; }
+            if (!typeCode) { packingArea.classList.add('hidden'); return; }
 
-    const filteredMeds = globalData.meds.filter(m => String(m.type_code).trim().toLowerCase() === String(typeCode).trim().toLowerCase());
-    tbody.innerHTML = '';
-    
-    if (filteredMeds.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-rose-500 font-bold">ไม่พบรายการยาในประเภทชุดยานี้ (โปรดเช็กคอลัมน์ type_code ใน Google Sheets)</td></tr>`;
-    } else {
-        filteredMeds.forEach((m) => {
-            tbody.innerHTML += `
-                <tr>
-                    <td class="px-4 py-2 font-medium">${m.generic_name}</td>
-                    <td class="px-4 py-2">${m.strength}</td>
-                    <td class="px-4 py-2 text-center">${m.dosage_form}</td>
-                    <td class="px-4 py-2 text-center font-bold text-slate-700">${m.std_qty}</td>
-                    <td class="px-4 py-2"><input type="date" class="pack-exp-date w-full border rounded px-2 py-1" required></td>
-                    <td class="px-4 py-2"><input type="number" class="pack-actual-qty w-full border rounded px-2 py-1 text-center font-bold text-teal-700" value="${m.std_qty}"></td>
-                </tr>
-            `;
-        });
-    }
-    packingArea.classList.remove('hidden');
-}
+            const targetCode = cleanStr(typeCode);
+            const filteredMeds = globalData.meds.filter(m => cleanStr(m.type_code) === targetCode);
+            
+            tbody.innerHTML = '';
+            
+            if (filteredMeds.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-rose-500 font-bold">ไม่พบรายการยาในประเภทชุดยานี้ (โปรดเช็กคอลัมน์ type_code ใน Google Sheets)</td></tr>`;
+            } else {
+                filteredMeds.forEach((m) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="px-4 py-2 font-medium">${m.generic_name}</td>
+                            <td class="px-4 py-2">${m.strength}</td>
+                            <td class="px-4 py-2 text-center">${m.dosage_form}</td>
+                            <td class="px-4 py-2 text-center font-bold text-slate-700">${m.std_qty}</td>
+                            <td class="px-4 py-2"><input type="date" class="pack-exp-date w-full border rounded px-2 py-1" required></td>
+                            <td class="px-4 py-2"><input type="number" class="pack-actual-qty w-full border rounded px-2 py-1 text-center font-bold text-teal-700" value="${m.std_qty}"></td>
+                        </tr>
+                    `;
+                });
+            }
+            packingArea.classList.remove('hidden');
+        }
 
         function processSavePacking() {
-    const typeCode = document.getElementById('packKitTypeSelect').value;
-    const packer = document.getElementById('packerName').value.trim();
-    const pharmacist = document.getElementById('pharmacistName').value.trim();
+            const typeCode = document.getElementById('packKitTypeSelect').value;
+            const packer = document.getElementById('packerName').value.trim();
+            const pharmacist = document.getElementById('pharmacistName').value.trim();
 
-    if (!typeCode || !packer || !pharmacist) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+            if (!typeCode || !packer || !pharmacist) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
 
-    const rows = document.querySelectorAll('#packingTableBody tr');
-    let items = [];
-    let minExpDate = null;
-    let isValid = true;
-    
-    // ✅ ย้ายการดึงรายการยาชนิดนี้มาไว้ตรงนี้ก่อนลูป
-    const filteredMeds = globalData.meds.filter(m => String(m.type_code).trim().toLowerCase() === String(typeCode).trim().toLowerCase());
+            const rows = document.querySelectorAll('#packingTableBody tr');
+            let items = [];
+            let minExpDate = null;
+            let isValid = true;
+            
+            const targetCode = cleanStr(typeCode);
+            const filteredMeds = globalData.meds.filter(m => cleanStr(m.type_code) === targetCode);
 
-    rows.forEach((row, i) => {
-        const expInput = row.querySelector('.pack-exp-date').value;
-        const topupInput = row.querySelector('.pack-actual-qty').value;
-        
-        if (!expInput) isValid = false;
-        if (expInput) {
-            const currentExp = new Date(expInput);
-            if (!minExpDate || currentExp < minExpDate) minExpDate = currentExp;
-        }
-        
-        items.push({
-            generic_name: filteredMeds[i].generic_name,
-            strength: filteredMeds[i].strength,
-            std_qty: filteredMeds[i].std_qty,
-            topup_qty: Number(topupInput) || 0,
-            packed_qty: filteredMeds[i].std_qty,
-            exp_date: expInput
-        });
-    });
+            rows.forEach((row, i) => {
+                const expInput = row.querySelector('.pack-exp-date').value;
+                const topupInput = row.querySelector('.pack-actual-qty').value;
+                
+                if (!expInput) isValid = false;
+                if (expInput) {
+                    const currentExp = new Date(expInput);
+                    if (!minExpDate || currentExp < minExpDate) minExpDate = currentExp;
+                }
+                
+                if (filteredMeds[i]) {
+                    items.push({
+                        generic_name: filteredMeds[i].generic_name,
+                        strength: filteredMeds[i].strength,
+                        std_qty: filteredMeds[i].std_qty,
+                        topup_qty: Number(topupInput) || 0,
+                        packed_qty: filteredMeds[i].std_qty,
+                        exp_date: expInput
+                    });
+                }
+            });
 
-    if (!isValid) { alert('กรุณาระบุวันหมดอายุยาทุกรายการ'); return; }
-
-    // ... (ส่วนที่เหลือของฟังก์ชันคงเดิม) ...
+            if (!isValid) { alert('กรุณาระบุวันหมดอายุยาทุกรายการ'); return; }
 
             const offsetMonths = parseInt(localStorage.getItem('em_exp_offset_months') || '6', 10);
             let calculatedKitExp = new Date(minExpDate);
             calculatedKitExp.setMonth(calculatedKitExp.getMonth() - offsetMonths);
 
-            const kitInfo = globalData.kits.find(k => String(k.type_code).trim().toLowerCase() === String(typeCode).trim().toLowerCase()) || { prefix: "EM-KIT" };
+            const kitInfo = globalData.kits.find(k => cleanStr(k.type_code) === targetCode) || { prefix: "EM-KIT" };
             const runningNo = String(globalData.records.length + 1).padStart(4, '0');
             const boxId = `${kitInfo.prefix}-${runningNo}`;
             const nowStr = new Date().toISOString().split('T')[0];
@@ -534,8 +531,6 @@
             if (logo) document.getElementById('printLogo').src = logo;
 
             document.getElementById('printBoxId').innerText = rec.box_id;
-            
-            // แสดงวันที่จัดชุดในรูปแบบ วัน/เดือน/พ.ศ.
             document.getElementById('printPackDate').innerText = formatFullThaiDate(rec.pack_date);
             document.getElementById('printBoxExp').innerText = formatThaiMonthYear(rec.kit_exp_date);
             document.getElementById('printSignPacker').innerText = rec.packer;
@@ -544,7 +539,6 @@
             const printTbody = document.getElementById('printTableBody');
             printTbody.innerHTML = '';
             rec.items.forEach(item => {
-                // แสดง std_qty (บรรจุมาตรฐาน) เสมอบนหน้ากล่อง
                 const displayQty = item.std_qty || item.packed_qty;
                 printTbody.innerHTML += `
                     <tr>
@@ -559,7 +553,6 @@
             JsBarcode("#barcodeCanvas", rec.box_id, { format: "CODE128", width: 1.5, height: 35, displayValue: false });
         }
 
-        // ฟังก์ชันสั่ง Re-print ด้วย BOX ID (อ่านจาก items_json)
         function reprintByBoxId(boxId) {
             const rec = globalData.records.find(r => String(r.box_id).trim().toUpperCase() === String(boxId).trim().toUpperCase());
             
@@ -593,7 +586,6 @@
             }, 300);
         }
 
-        // ระบบเปิด/ปิด กล้องสแกนมือถือ
         function toggleCameraScanner() {
             const readerDiv = document.getElementById('reader');
             if (readerDiv.classList.contains('hidden')) {

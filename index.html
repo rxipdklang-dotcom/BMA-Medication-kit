@@ -293,20 +293,21 @@
                     <div><svg id="barcodeCanvas"></svg></div>
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-xs mb-2 bg-neutral-100 p-2 rounded">
-                    <div><b>วันที่จัดชุดยา:</b> <span id="printPackDate">-</span></div>
-                    <div><b>วันหมดอายุชุดยา:</b> <span id="printBoxExp" class="text-red-700 font-extrabold text-xl">-</span></div>
+                    <div><b>วันที่จัดชุด:</b> <span id="printPackDate">-</span></div>
+                    <div><b>วันหมดอายุกล่อง:</b> <span id="printBoxExp" class="text-red-700 font-extrabold text-sm">-</span></div>
                 </div>
-                <table class="w-full border-collapse border border-slate-400 text-left text-xs mb-3">
-                    <thead>
-                        <tr class="bg-slate-200">
-                            <th class="border border-slate-400 p-1">รายการยา</th>
-                            <th class="border border-slate-400 p-1 text-center w-28">ความแรง</th>
-                            <th class="border border-slate-400 p-1 text-center w-10">บรรจุ</th>
-                            <th class="border border-slate-400 p-1 text-center w-28">Exp ยา</th>
-                        </tr>
-                    </thead>
-                    <tbody id="printTableBody"></tbody>
-                </table>
+                <!-- ✅ จุดที่ 2: ปรับความกว้างคอลัมน์ ความแรง เป็น w-32 -->
+<table class="w-full border-collapse border border-slate-400 text-left text-xs mb-3">
+    <thead>
+        <tr class="bg-slate-200">
+            <th class="border border-slate-400 p-1">รายการยา</th>
+            <th class="border border-slate-400 p-1 text-center w-32">ความแรง</th> <!-- เปลี่ยนจาก w-16 เป็น w-32 -->
+            <th class="border border-slate-400 p-1 text-center w-10">บรรจุ</th>
+            <th class="border border-slate-400 p-1 text-center w-28">Exp ยา</th>
+        </tr>
+    </thead>
+    <tbody id="printTableBody"></tbody>
+</table>
             </div>
             <div class="border-t border-slate-400 pt-2 mt-auto">
                 <div class="grid grid-cols-2 gap-4 text-xs">
@@ -505,33 +506,36 @@
         }
 
         function setupStickerPrint(rec) {
-            const hospName = localStorage.getItem('em_hosp_name') || "โรงพยาบาลกลาง";
-            const logo = localStorage.getItem('em_hosp_logo') || "";
+    const hospName = localStorage.getItem('em_hosp_name') || "โรงพยาบาลกลาง";
+    const logo = localStorage.getItem('em_hosp_logo') || "";
 
-            document.getElementById('printHospTitle').innerText = hospName;
-            if (logo) document.getElementById('printLogo').src = logo;
+    document.getElementById('printHospTitle').innerText = hospName;
+    if (logo) document.getElementById('printLogo').src = logo;
 
-            document.getElementById('printBoxId').innerText = rec.box_id;
-            document.getElementById('printPackDate').innerText = rec.pack_date;
-            document.getElementById('printBoxExp').innerText = formatThaiMonthYear(rec.kit_exp_date);
-            document.getElementById('printSignPacker').innerText = rec.packer;
-            document.getElementById('printSignRx').innerText = rec.pharmacist;
+    document.getElementById('printBoxId').innerText = rec.box_id;
+    
+    // ✅ จุดที่ 1: แปลงวันที่จัดชุดให้เป็นรูปแบบ วัน/เดือน/พ.ศ. (เช่น 20/07/2569)
+    document.getElementById('printPackDate').innerText = formatFullThaiDate(rec.pack_date);
+    
+    document.getElementById('printBoxExp').innerText = formatThaiMonthYear(rec.kit_exp_date);
+    document.getElementById('printSignPacker').innerText = rec.packer;
+    document.getElementById('printSignRx').innerText = rec.pharmacist;
 
-            const printTbody = document.getElementById('printTableBody');
-            printTbody.innerHTML = '';
-            rec.items.forEach(item => {
-                printTbody.innerHTML += `
-                    <tr>
-                        <td class="border border-slate-400 p-1">${item.generic_name}</td>
-                        <td class="border border-slate-400 p-1 text-center">${item.strength}</td>
-                        <td class="border border-slate-400 p-1 text-center font-bold">${item.packed_qty}</td>
-                        <td class="border border-slate-400 p-1 text-center">${formatFullThaiDate(item.exp_date)}</td>
-                    </tr>
-                `;
-            });
+    const printTbody = document.getElementById('printTableBody');
+    printTbody.innerHTML = '';
+    rec.items.forEach(item => {
+        printTbody.innerHTML += `
+            <tr>
+                <td class="border border-slate-400 p-1">${item.generic_name}</td>
+                <td class="border border-slate-400 p-1 text-center font-medium">${item.strength}</td>
+                <td class="border border-slate-400 p-1 text-center font-bold">${item.packed_qty}</td>
+                <td class="border border-slate-400 p-1 text-center">${formatFullThaiDate(item.exp_date)}</td>
+            </tr>
+        `;
+    });
 
-            JsBarcode("#barcodeCanvas", rec.box_id, { format: "CODE128", width: 1.5, height: 35, displayValue: false });
-        }
+    JsBarcode("#barcodeCanvas", rec.box_id, { format: "CODE128", width: 1.5, height: 35, displayValue: false });
+}
 
         // ระบบเปิด/ปิด กล้องสแกนมือถือ
         function toggleCameraScanner() {

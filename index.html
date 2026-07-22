@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -12,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- JsBarcode -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <!-- HTML5-QRCode Scanner -->
+    <!-- HTML5-QRCode Scanner สำหรับกล้องมือถือ -->
     <script src="https://unpkg.com/html5-qrcode"></script>
 
     <style>
@@ -51,7 +53,7 @@
     <!-- Main Content Container -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 no-print">
         
-        <!-- TAB 1: จัดชุดยา -->
+        <!-- 1. TAB: บันทึกจัดชุดยาฉุกเฉิน -->
         <section id="pack-tab" class="tab-content space-y-6">
             <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6">
                 <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border">
@@ -99,7 +101,7 @@
                 </div>
 
                 <div class="mt-6 flex justify-end gap-3">
-                    <button onclick="processSavePacking()" id="btnSavePack" class="px-5 py-2.5 rounded-lg theme-teal-bg text-white font-medium hover:opacity-90 shadow">
+                    <button onclick="processSavePacking()" id="btnSavePack" class="px-5 py-2.5 rounded-lg theme-teal-bg text-white font-medium hover:opacity-90 shadow transition cursor-pointer">
                         บันทึกจัดชุดยา & ออกเอกสาร
                     </button>
                 </div>
@@ -111,23 +113,24 @@
                         <h3 class="text-emerald-800 font-bold text-lg">
                             บันทึกข้อมูลเรียบร้อย! BOX ID: <span id="lblGeneratedBoxId" class="underline font-mono"></span>
                         </h3>
-                        <p class="text-emerald-700 text-sm mt-1">บันทึกลง Google Sheets แล้ว สามารถพิมพ์สติกเกอร์ได้ทันที</p>
+                        <p class="text-emerald-700 text-sm mt-1">บันทึกลง Google Sheets และสร้างบาร์โค้ดแล้ว สามารถพิมพ์สติกเกอร์ได้ทันที</p>
                     </div>
-                    <button onclick="window.print()" class="px-5 py-2.5 bg-emerald-600 text-white rounded-lg font-medium shadow hover:bg-emerald-700">
+                    <button onclick="window.print()" class="px-5 py-2.5 bg-emerald-600 text-white rounded-lg font-medium shadow hover:bg-emerald-700 transition cursor-pointer">
                         🖨️ พิมพ์เอกสารติดหน้ากล่อง
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 2: จ่ายชุดยา -->
+        <!-- 2. TAB: บันทึกจ่ายชุดยาฉุกเฉิน -->
         <section id="dispense-tab" class="tab-content space-y-6 hidden">
             <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6 max-w-2xl mx-auto">
                 <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border">
                     📦 บันทึกจ่ายชุดยาฉุกเฉิน
                 </h2>
+                
                 <div class="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
-                    <button onclick="toggleCameraScanner()" id="btnToggleCam" class="w-full py-3 bg-cyan-700 text-white rounded-lg font-bold shadow hover:bg-cyan-800 transition">
+                    <button onclick="toggleCameraScanner()" id="btnToggleCam" class="w-full py-3 bg-cyan-700 text-white rounded-lg font-bold shadow hover:bg-cyan-800 transition flex items-center justify-center gap-2 cursor-pointer">
                         📷 เปิด/ปิด กล้องมือถือสแกนบาร์โค้ด
                     </button>
                     <div id="reader" class="mt-3 overflow-hidden rounded-lg border border-slate-300 hidden"></div>
@@ -136,7 +139,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-600 mb-1">รหัสชุดยาฉุกเฉิน (BOX ID)</label>
-                        <input type="text" id="dispenseBoxId" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 font-mono text-lg uppercase" placeholder="ยิง Barcode หรือกรอกรหัสชุดยา">
+                        <input type="text" id="dispenseBoxId" class="w-full rounded-lg border border-slate-300 px-3 py-2.5 font-mono text-lg uppercase focus:ring-2 focus:ring-cyan-600" placeholder="ยิง Barcode หรือกรอกรหัสชุดยา">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-600 mb-1">หน่วยงานที่เบิก/รับจ่าย</label>
@@ -149,7 +152,7 @@
                         <input type="text" id="dispenseStaff" class="w-full rounded-lg border border-slate-300 px-3 py-2.5" placeholder="ชื่อ-นามสกุล หรือ รหัสเจ้าหน้าที่">
                     </div>
                     <div class="pt-2">
-                        <button onclick="processDispense()" id="btnSaveDispense" class="w-full py-3 theme-teal-bg text-white rounded-lg font-bold shadow hover:opacity-90">
+                        <button onclick="processDispense()" id="btnSaveDispense" class="w-full py-3 theme-teal-bg text-white rounded-lg font-bold shadow hover:opacity-90 transition cursor-pointer">
                             ยืนยันการบันทึกจ่ายออก (ส่งไป Google Sheets)
                         </button>
                     </div>
@@ -157,7 +160,7 @@
             </div>
         </section>
 
-        <!-- TAB 3: แดชบอร์ด & Re-print -->
+        <!-- 3. TAB: แดชบอร์ด -->
         <section id="dashboard-tab" class="tab-content space-y-6 hidden">
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
@@ -186,7 +189,7 @@
                 <input type="text" id="quickReprintBoxId" 
                        onkeypress="if(event.key === 'Enter') { reprintByBoxId(this.value.trim().toUpperCase()); this.value=''; }" 
                        placeholder="สแกนหรือกรอก BOX ID แล้วกด Enter" 
-                       class="w-full sm:max-w-xs rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono uppercase">
+                       class="w-full sm:max-w-xs rounded-lg border border-slate-300 px-3 py-2 text-sm font-mono uppercase focus:ring-2 focus:ring-teal-500">
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -208,23 +211,30 @@
             </div>
         </section>
 
-        <!-- TAB 4: ตั้งค่า -->
+        <!-- 4. TAB: ตั้งค่าระบบ -->
         <section id="setting-tab" class="tab-content space-y-6 hidden">
             <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6">
-                <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border">⏳ ตั้งค่าเกณฑ์คำนวณวันหมดอายุชุดยา</h2>
+                <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border flex items-center gap-2">
+                    ⏳ ตั้งค่าเกณฑ์คำนวณวันหมดอายุชุดยา
+                </h2>
                 <div class="max-w-md">
+                    <label class="block text-sm font-medium text-slate-600 mb-1">ระยะเวลาหมดอายุล่วงหน้าก่อนวันหมดอายุจริง</label>
                     <select id="cfgExpOffsetMonths" onchange="saveExpOffsetConfig()" class="w-full rounded-lg border border-slate-300 px-3 py-2 bg-white text-sm">
                         <option value="0">0 เดือน (ยึดตามวันหมดอายุสั้นที่สุดจริง)</option>
                         <option value="1">1 เดือน ก่อนวันหมดอายุจริง</option>
                         <option value="2">2 เดือน ก่อนวันหมดอายุจริง</option>
                         <option value="3">3 เดือน ก่อนวันหมดอายุจริง</option>
                         <option value="6" selected>6 เดือน ก่อนวันหมดอายุจริง (แนะนำ)</option>
+                        <option value="9">9 เดือน ก่อนวันหมดอายุจริง</option>
+                        <option value="12">12 เดือน ก่อนวันหมดอายุจริง</option>
                     </select>
                 </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6">
-                <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border">🏥 จัดการข้อมูลโรงพยาบาลและโลโก้</h2>
+                <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border flex items-center gap-2">
+                    🏥 จัดการข้อมูลโรงพยาบาลและโลโก้
+                </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="md:col-span-2 space-y-4">
                         <div>
@@ -241,7 +251,34 @@
                     </div>
                 </div>
                 <div class="mt-4 flex justify-end">
-                    <button onclick="saveHospitalProfile()" class="px-4 py-2 theme-teal-bg text-white text-sm rounded-lg hover:opacity-90">บันทึกข้อมูลโรงพยาบาล</button>
+                    <button onclick="saveHospitalProfile()" class="px-4 py-2 theme-teal-bg text-white text-sm rounded-lg hover:opacity-90 cursor-pointer">บันทึกข้อมูลโรงพยาบาล</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border theme-teal-border p-6">
+                <h2 class="text-xl font-bold theme-teal-text mb-4 border-b pb-2 theme-teal-border flex items-center gap-2">
+                    🖨️ ระบบตั้งค่าขนาดเอกสารติดหน้ากล่องยา
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">ความกว้างเอกสาร (มม.)</label>
+                        <input type="number" id="cfgPrintWidth" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value="100">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">ความสูงเอกสาร (มม.)</label>
+                        <input type="number" id="cfgPrintHeight" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value="160">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">ฟอนต์หัวข้อ (px)</label>
+                        <input type="number" id="cfgPrintFontHead" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value="16">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">ฟอนต์เนื้อหา (px)</label>
+                        <input type="number" id="cfgPrintFontBody" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" value="12">
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="savePrintConfig()" class="px-4 py-2 theme-teal-bg text-white text-sm rounded-lg hover:opacity-90 cursor-pointer">บันทึกขนาดเอกสาร</button>
                 </div>
             </div>
         </section>
@@ -273,9 +310,9 @@
                     <thead>
                         <tr class="bg-slate-200">
                             <th class="border border-slate-400 p-1">รายการยา</th>
-                            <th class="border border-slate-400 p-1 text-center w-32">ความแรง</th>
+                            <th class="border border-slate-400 p-1 text-center w-28">ความแรง</th>
                             <th class="border border-slate-400 p-1 text-center w-10">บรรจุ</th>
-                            <th class="border border-slate-400 p-1 text-center w-28">Exp ยา</th>
+                            <th class="border border-slate-400 p-1 text-center w-24">Exp ยา</th>
                         </tr>
                     </thead>
                     <tbody id="printTableBody"></tbody>
@@ -296,8 +333,9 @@
         <p class="opacity-75 mt-0.5">ออกแบบและพัฒนาโดย ภญ.อาภัสสา ตั้งกิจพานิช</p>
     </footer>
 
+    <!-- JavaScript Execution -->
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxcRLZ58Qs24s5LAPPF1lmxZUhk8ibKrLa2_TGj9lRbRxEdTqFkGefPFeweHVWU53GIbg/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyhD3wLZQyXyx0T3fvHSd3C7W68Ap_Uipk6uTt2SvaLMU1xOdF0JoPtzCEr3hCCu1Ra6w/exec";
 
         let globalData = { kits: [], meds: [], depts: [], records: [] };
         let html5QrCode = null;
@@ -306,6 +344,23 @@
             initializeSettings();
             fetchInitialData();
         });
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('#mainMenu button').forEach(btn => {
+                btn.classList.remove('bg-white/20');
+                btn.classList.add('hover:bg-white/10');
+            });
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white/20');
+                activeBtn.classList.remove('hover:bg-white/10');
+            }
+
+            if (tabId === 'dashboard-tab') renderDashboard();
+        }
 
         function initializeSettings() {
             const storedHospName = localStorage.getItem('em_hosp_name') || "กลุ่มงานเภสัชกรรม โรงพยาบาลกลาง";
@@ -323,10 +378,15 @@
         }
 
         function fetchInitialData() {
+            if (!GAS_URL || GAS_URL === "" || GAS_URL.includes("YOUR_GOOGLE_APPS_SCRIPT")) {
+                alert("กรุณาใส่ Web App URL ของ Google Apps Script ในไฟล์ก่อนใช้งาน");
+                return;
+            }
+
             fetch(`${GAS_URL}?action=getInitialData`)
                 .then(res => res.json())
                 .then(data => {
-                    globalData = data;
+                    globalData = data || { kits: [], meds: [], depts: [], records: [] };
                     populateDropdowns();
                     renderDashboard();
                 })
@@ -345,52 +405,60 @@
             if (!dateString) return "-";
             const date = new Date(dateString);
             if (isNaN(date.getTime())) return dateString;
+            
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear() + 543;
+            
             return `${day}/${month}/${year}`;
         }
 
         function populateDropdowns() {
             const packSelect = document.getElementById('packKitTypeSelect');
             packSelect.innerHTML = '<option value="">-- กรุณาเลือกประเภทชุดยา --</option>';
-            (globalData.kits || []).forEach(k => {
-                packSelect.innerHTML += `<option value="${k.type_code}">${k.type_name}</option>`;
-            });
+            if (globalData.kits) {
+                globalData.kits.forEach(k => {
+                    packSelect.innerHTML += `<option value="${k.type_code}">${k.type_name}</option>`;
+                });
+            }
 
             const deptSelect = document.getElementById('dispenseDeptSelect');
             deptSelect.innerHTML = '<option value="">-- กรุณาเลือกหน่วยงาน --</option>';
-            (globalData.depts || []).forEach(d => {
-                deptSelect.innerHTML += `<option value="${d.dept_name}">${d.dept_name}</option>`;
-            });
+            if (globalData.depts) {
+                globalData.depts.forEach(d => {
+                    deptSelect.innerHTML += `<option value="${d.dept_name}">${d.dept_name}</option>`;
+                });
+            }
         }
 
-        // 🌟 แก้ไขจุดเปรียบเทียบประเภทชุดยาแบบตรงไปตรงมา ไม่ใส่แปลงค่าซับซ้อน
+        function cleanStr(str) {
+            return String(str || '').trim().toLowerCase().replace(/\s+/g, '');
+        }
+
         function loadKitTemplateForPacking() {
-            const selectedTypeCode = document.getElementById('packKitTypeSelect').value;
+            const typeCode = document.getElementById('packKitTypeSelect').value;
             const packingArea = document.getElementById('packingArea');
             const tbody = document.getElementById('packingTableBody');
 
-            if (!selectedTypeCode) { packingArea.classList.add('hidden'); return; }
+            if (!typeCode) { packingArea.classList.add('hidden'); return; }
 
-            const filteredMeds = (globalData.meds || []).filter(m => 
-                String(m.type_code || '').trim() === String(selectedTypeCode).trim()
-            );
-
+            const targetCode = cleanStr(typeCode);
+            const filteredMeds = (globalData.meds || []).filter(m => cleanStr(m.type_code) === targetCode);
+            
             tbody.innerHTML = '';
             
             if (filteredMeds.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-rose-500 font-bold">ไม่พบรายการยาในประเภทชุดยานี้ (โปรดตรวจสอบคอลัมน์ type_code ใน Google Sheets)</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-rose-500 font-bold">ไม่พบรายการยาในประเภทชุดยานี้ (ค้นหาด้วยรหัส: "${typeCode}" - โปรดเช็กคอลัมน์ type_code ใน Google Sheets)</td></tr>`;
             } else {
                 filteredMeds.forEach((m) => {
                     tbody.innerHTML += `
                         <tr>
-                            <td class="px-4 py-2 font-medium">${m.generic_name || '-'}</td>
-                            <td class="px-4 py-2">${m.strength || '-'}</td>
-                            <td class="px-4 py-2 text-center">${m.dosage_form || '-'}</td>
-                            <td class="px-4 py-2 text-center font-bold text-slate-700">${m.std_qty || 0}</td>
-                            <td class="px-4 py-2"><input type="date" class="pack-exp-date w-full border rounded px-2 py-1" required></td>
-                            <td class="px-4 py-2"><input type="number" class="pack-actual-qty w-full border rounded px-2 py-1 text-center font-bold text-teal-700" value="${m.std_qty || 0}"></td>
+                            <td class="px-4 py-2 font-medium">${m.generic_name}</td>
+                            <td class="px-4 py-2">${m.strength}</td>
+                            <td class="px-4 py-2 text-center">${m.dosage_form}</td>
+                            <td class="px-4 py-2 text-center font-bold text-slate-700">${m.std_qty}</td>
+                            <td class="px-4 py-2"><input type="date" class="pack-exp-date w-full border border-slate-300 rounded px-2 py-1" required></td>
+                            <td class="px-4 py-2"><input type="number" class="pack-actual-qty w-full border border-slate-300 rounded px-2 py-1 text-center font-bold text-teal-700" value="${m.std_qty}"></td>
                         </tr>
                     `;
                 });
@@ -399,24 +467,23 @@
         }
 
         function processSavePacking() {
-            const selectedTypeCode = document.getElementById('packKitTypeSelect').value;
+            const typeCode = document.getElementById('packKitTypeSelect').value;
             const packer = document.getElementById('packerName').value.trim();
             const pharmacist = document.getElementById('pharmacistName').value.trim();
 
-            if (!selectedTypeCode || !packer || !pharmacist) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+            if (!typeCode || !packer || !pharmacist) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
 
             const rows = document.querySelectorAll('#packingTableBody tr');
             let items = [];
             let minExpDate = null;
             let isValid = true;
-
-            const filteredMeds = (globalData.meds || []).filter(m => 
-                String(m.type_code || '').trim() === String(selectedTypeCode).trim()
-            );
+            
+            const targetCode = cleanStr(typeCode);
+            const filteredMeds = (globalData.meds || []).filter(m => cleanStr(m.type_code) === targetCode);
 
             rows.forEach((row, i) => {
-                const expInput = row.querySelector('.pack-exp-date').value;
-                const topupInput = row.querySelector('.pack-actual-qty').value;
+                const expInput = row.querySelector('.pack-exp-date')?.value;
+                const topupInput = row.querySelector('.pack-actual-qty')?.value;
                 
                 if (!expInput) isValid = false;
                 if (expInput) {
@@ -428,9 +495,9 @@
                     items.push({
                         generic_name: filteredMeds[i].generic_name,
                         strength: filteredMeds[i].strength,
-                        std_qty: filteredMeds[i].std_qty || 0,
+                        std_qty: filteredMeds[i].std_qty,
                         topup_qty: Number(topupInput) || 0,
-                        packed_qty: filteredMeds[i].std_qty || 0,
+                        packed_qty: filteredMeds[i].std_qty,
                         exp_date: expInput
                     });
                 }
@@ -442,14 +509,14 @@
             let calculatedKitExp = new Date(minExpDate);
             calculatedKitExp.setMonth(calculatedKitExp.getMonth() - offsetMonths);
 
-            const kitInfo = (globalData.kits || []).find(k => String(k.type_code).trim() === String(selectedTypeCode).trim()) || { prefix: "EM-KIT" };
+            const kitInfo = (globalData.kits || []).find(k => cleanStr(k.type_code) === targetCode) || { prefix: "EM-KIT" };
             const runningNo = String((globalData.records || []).length + 1).padStart(4, '0');
             const boxId = `${kitInfo.prefix}-${runningNo}`;
             const nowStr = new Date().toISOString().split('T')[0];
 
             const recordPayload = {
                 box_id: boxId,
-                type_code: selectedTypeCode,
+                type_code: typeCode,
                 pack_date: nowStr,
                 min_med_exp: minExpDate.toISOString().split('T')[0],
                 kit_exp_date: calculatedKitExp.toISOString().split('T')[0],
@@ -458,8 +525,9 @@
                 items: items
             };
 
-            document.getElementById('btnSavePack').disabled = true;
-            document.getElementById('btnSavePack').innerText = "กำลังบันทึกลง Google Sheets...";
+            const btnSave = document.getElementById('btnSavePack');
+            btnSave.disabled = true;
+            btnSave.innerText = "กำลังบันทึกลง Google Sheets...";
 
             fetch(GAS_URL, {
                 method: 'POST',
@@ -467,25 +535,25 @@
             })
             .then(res => res.json())
             .then(res => {
-                alert(res.message);
+                alert(res.message || "บันทึกข้อมูลสำเร็จ");
                 document.getElementById('lblGeneratedBoxId').innerText = boxId;
                 document.getElementById('printPreviewCard').classList.remove('hidden');
                 setupStickerPrint(recordPayload);
                 fetchInitialData();
             })
+            .catch(err => alert("เกิดข้อผิดพลาดในการบันทึก: " + err))
             .finally(() => {
-                document.getElementById('btnSavePack').disabled = false;
-                document.getElementById('btnSavePack').innerText = "บันทึกจัดชุดยา & ออกเอกสาร";
+                btnSave.disabled = false;
+                btnSave.innerText = "บันทึกจัดชุดยา & ออกเอกสาร";
             });
         }
 
         function setupStickerPrint(rec) {
             const hospName = localStorage.getItem('em_hosp_name') || "โรงพยาบาลกลาง";
             const logo = localStorage.getItem('em_hosp_logo') || "";
-
+            
             document.getElementById('printHospTitle').innerText = hospName;
-            if (logo) document.getElementById('printLogo').src = logo;
-
+            document.getElementById('printLogo').src = logo || document.getElementById('navLogo').src;
             document.getElementById('printBoxId').innerText = rec.box_id;
             document.getElementById('printPackDate').innerText = formatFullThaiDate(rec.pack_date);
             document.getElementById('printBoxExp').innerText = formatThaiMonthYear(rec.kit_exp_date);
@@ -494,66 +562,62 @@
 
             const printTbody = document.getElementById('printTableBody');
             printTbody.innerHTML = '';
-            rec.items.forEach(item => {
-                const displayQty = item.std_qty || item.packed_qty;
+
+            const items = rec.items || [];
+            items.forEach(item => {
                 printTbody.innerHTML += `
                     <tr>
-                        <td class="border border-slate-400 p-1">${item.generic_name}</td>
-                        <td class="border border-slate-400 p-1 text-center font-medium">${item.strength}</td>
-                        <td class="border border-slate-400 p-1 text-center font-bold">${displayQty}</td>
-                        <td class="border border-slate-400 p-1 text-center">${formatFullThaiDate(item.exp_date)}</td>
+                        <td class="border border-slate-400 p-1 font-medium">${item.generic_name}</td>
+                        <td class="border border-slate-400 p-1 text-center">${item.strength || '-'}</td>
+                        <td class="border border-slate-400 p-1 text-center font-bold">${item.topup_qty || item.packed_qty || item.std_qty}</td>
+                        <td class="border border-slate-400 p-1 text-center">${formatThaiMonthYear(item.exp_date)}</td>
                     </tr>
                 `;
             });
 
-            JsBarcode("#barcodeCanvas", rec.box_id, { format: "CODE128", width: 1.5, height: 35, displayValue: false });
-        }
-
-        function reprintByBoxId(boxId) {
-            const rec = (globalData.records || []).find(r => String(r.box_id).trim().toUpperCase() === String(boxId).trim().toUpperCase());
-            
-            if (!rec) {
-                alert("ไม่พบข้อมูลชุดยา " + boxId + " ในระบบ");
-                return;
+            try {
+                JsBarcode("#barcodeCanvas", rec.box_id, {
+                    format: "CODE128",
+                    width: 1.5,
+                    height: 40,
+                    displayValue: false
+                });
+            } catch (e) {
+                console.error("Barcode generation error:", e);
             }
 
-            let itemsArray = rec.items;
-            if (typeof rec.items_json === 'string') {
-                try { itemsArray = JSON.parse(rec.items_json); } catch (e) {}
-            }
+            const printArea = document.getElementById('printArea');
+            printArea.classList.remove('hidden');
 
-            const printPayload = {
-                box_id: rec.box_id,
-                pack_date: rec.pack_date,
-                kit_exp_date: rec.kit_exp_date,
-                packer: rec.packer || "-",
-                pharmacist: rec.pharmacist || "-",
-                items: itemsArray || []
-            };
-
-            setupStickerPrint(printPayload);
-            setTimeout(() => { window.print(); }, 300);
+            const width = localStorage.getItem('em_print_w') || '100';
+            const height = localStorage.getItem('em_print_h') || '160';
+            const frame = document.getElementById('stickerFrame');
+            frame.style.width = `${width}mm`;
+            frame.style.minHeight = `${height}mm`;
         }
 
         function toggleCameraScanner() {
             const readerDiv = document.getElementById('reader');
-            if (readerDiv.classList.contains('hidden')) {
-                readerDiv.classList.remove('hidden');
-                html5QrCode = new Html5Qrcode("reader");
-                html5QrCode.start(
-                    { facingMode: "environment" },
-                    { fps: 10, qrbox: { width: 250, height: 150 } },
-                    (decodedText) => {
-                        document.getElementById('dispenseBoxId').value = decodedText;
-                        toggleCameraScanner();
-                    },
-                    () => {}
-                );
-            } else {
+            if (!readerDiv.classList.contains('hidden')) {
                 if (html5QrCode) {
-                    html5QrCode.stop().then(() => { readerDiv.classList.add('hidden'); });
+                    html5QrCode.stop().then(() => {
+                        readerDiv.classList.add('hidden');
+                    }).catch(err => console.error(err));
                 }
+                return;
             }
+
+            readerDiv.classList.remove('hidden');
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 150 } },
+                (decodedText) => {
+                    document.getElementById('dispenseBoxId').value = decodedText;
+                    html5QrCode.stop().then(() => readerDiv.classList.add('hidden'));
+                },
+                () => {}
+            ).catch(err => alert("ไม่สามารถเปิดกล้องได้: " + err));
         }
 
         function processDispense() {
@@ -561,96 +625,142 @@
             const dept = document.getElementById('dispenseDeptSelect').value;
             const staff = document.getElementById('dispenseStaff').value.trim();
 
-            if (!boxId || !dept || !staff) { alert('กรุณากรอกข้อมูลให้ครบถ้วน'); return; }
+            if (!boxId || !dept || !staff) { alert("กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
 
-            document.getElementById('btnSaveDispense').disabled = true;
-            document.getElementById('btnSaveDispense').innerText = "กำลังตัดจ่ายไปยัง Google Sheets...";
+            const btnSave = document.getElementById('btnSaveDispense');
+            btnSave.disabled = true;
+            btnSave.innerText = "กำลังบันทึกการจ่าย...";
 
             fetch(GAS_URL, {
                 method: 'POST',
                 body: JSON.stringify({
                     action: 'dispenseKit',
-                    box_id: boxId,
-                    dept_name: dept,
-                    dispense_date: new Date().toISOString().split('T')[0],
-                    dispensed_by: staff
+                    dispense: {
+                        box_id: boxId,
+                        department: dept,
+                        dispense_staff: staff,
+                        dispense_date: new Date().toISOString().split('T')[0]
+                    }
                 })
             })
             .then(res => res.json())
             .then(res => {
-                alert(res.message);
+                alert(res.message || "บันทึกจ่ายเรียบร้อยแล้ว");
                 document.getElementById('dispenseBoxId').value = '';
                 document.getElementById('dispenseStaff').value = '';
                 fetchInitialData();
             })
+            .catch(err => alert("เกิดข้อผิดพลาดในการจ่ายยา: " + err))
             .finally(() => {
-                document.getElementById('btnSaveDispense').disabled = false;
-                document.getElementById('btnSaveDispense').innerText = "ยืนยันการบันทึกจ่ายออก (ส่งไป Google Sheets)";
+                btnSave.disabled = false;
+                btnSave.innerText = "ยืนยันการบันทึกจ่ายออก (ส่งไป Google Sheets)";
             });
         }
 
         function renderDashboard() {
             const records = globalData.records || [];
-            document.getElementById('statTotal').innerText = records.length;
-            document.getElementById('statAvail').innerText = records.filter(r => r.status === 'Available').length;
-            document.getElementById('statDisp').innerText = records.filter(r => r.status === 'Dispensed').length;
-
             const tbody = document.getElementById('dashTableBody');
             tbody.innerHTML = '';
+
+            let total = records.length;
+            let avail = 0;
+            let disp = 0;
+            let alertCount = 0;
+
+            const now = new Date();
+
             records.forEach(r => {
+                const isDispensed = r.status === 'จ่ายแล้ว' || r.department;
+                if (isDispensed) disp++; else avail++;
+
+                const kitExp = new Date(r.kit_exp_date);
+                const diffTime = kitExp - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                let isAlert = false;
+                if (diffDays <= 30) {
+                    alertCount++;
+                    isAlert = true;
+                }
+
+                let statusBadge = isDispensed 
+                    ? `<span class="px-2 py-1 rounded-full text-xs font-semibold bg-cyan-100 text-cyan-800">จ่ายออก (${r.department || '-'})</span>`
+                    : `<span class="px-2 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">พร้อมใช้ในห้องยา</span>`;
+
+                if (isAlert) {
+                    statusBadge += ` <span class="px-2 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">ใกล้/หมดอายุ</span>`;
+                }
+
+                const kitTypeObj = (globalData.kits || []).find(k => cleanStr(k.type_code) === cleanStr(r.type_code));
+                const kitName = kitTypeObj ? kitTypeObj.type_name : r.type_code;
+
                 tbody.innerHTML += `
                     <tr>
-                        <td class="px-4 py-3 font-mono font-bold">${r.box_id}</td>
-                        <td class="px-4 py-3">${r.type_code}</td>
-                        <td class="px-4 py-3">${formatThaiMonthYear(r.kit_exp_date)}</td>
-                        <td class="px-4 py-3">${r.dept_name}</td>
-                        <td class="px-4 py-3">
-                            <span class="px-2 py-1 rounded-full text-xs ${r.status === 'Available' ? 'bg-emerald-100 text-emerald-800' : 'bg-cyan-100 text-cyan-800'}">
-                                ${r.status === 'Available' ? 'พร้อมใช้' : 'จ่ายแล้ว'}
-                            </span>
-                        </td>
+                        <td class="px-4 py-3 font-mono font-bold text-slate-800">${r.box_id}</td>
+                        <td class="px-4 py-3">${kitName}</td>
+                        <td class="px-4 py-3 ${isAlert ? 'text-rose-600 font-bold' : ''}">${formatThaiMonthYear(r.kit_exp_date)}</td>
+                        <td class="px-4 py-3">${r.department || 'ห้องยา'}</td>
+                        <td class="px-4 py-3">${statusBadge}</td>
                         <td class="px-4 py-3 text-center">
-                            <button onclick="reprintByBoxId('${r.box_id}')" class="px-2.5 py-1 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 rounded text-xs border border-slate-300 font-medium transition flex items-center gap-1 mx-auto">
-                                🖨️ พิมพ์ซ้ำ
+                            <button onclick="reprintByBoxId('${r.box_id}')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs font-medium cursor-pointer border border-slate-300">
+                                🖨️ Re-print
                             </button>
                         </td>
                     </tr>
                 `;
             });
+
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statAvail').innerText = avail;
+            document.getElementById('statDisp').innerText = disp;
+            document.getElementById('statAlert').innerText = alertCount;
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
+        function reprintByBoxId(boxId) {
+            const rec = (globalData.records || []).find(r => cleanStr(r.box_id) === cleanStr(boxId));
+            if (!rec) {
+                alert(`ไม่พบข้อมูลกล่องยา BOX ID: ${boxId}`);
+                return;
+            }
+            setupStickerPrint(rec);
+            window.print();
+        }
+
+        function encodeLogoToBase64() {
+            const fileInput = document.getElementById('cfgLogoFile');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Str = e.target.result;
+                document.getElementById('cfgLogoPreview').src = base64Str;
+                localStorage.setItem('em_hosp_logo', base64Str);
+                document.getElementById('navLogo').src = base64Str;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveHospitalProfile() {
+            const hospName = document.getElementById('cfgHospName').value.trim();
+            if (hospName) {
+                localStorage.setItem('em_hosp_name', hospName);
+                document.getElementById('navHospName').innerText = hospName;
+                alert('บันทึกข้อมูลโรงพยาบาลเรียบร้อยแล้ว');
+            }
         }
 
         function saveExpOffsetConfig() {
             const val = document.getElementById('cfgExpOffsetMonths').value;
             localStorage.setItem('em_exp_offset_months', val);
-            alert('บันทึกเกณฑ์คำนวณวันหมดอายุเรียบร้อยแล้ว');
         }
 
-        function saveHospitalProfile() {
-            const name = document.getElementById('cfgHospName').value.trim();
-            if (name) {
-                localStorage.setItem('em_hosp_name', name);
-                document.getElementById('navHospName').innerText = name;
-                alert('บันทึกข้อมูลโรงพยาบาลเรียบร้อยแล้ว');
-            }
-        }
-
-        function encodeLogoToBase64() {
-            const fileInput = document.getElementById('cfgLogoFile');
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Img = e.target.result;
-                    localStorage.setItem('em_hosp_logo', base64Img);
-                    document.getElementById('navLogo').src = base64Img;
-                    document.getElementById('cfgLogoPreview').src = base64Img;
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            }
+        function savePrintConfig() {
+            const w = document.getElementById('cfgPrintWidth').value;
+            const h = document.getElementById('cfgPrintHeight').value;
+            localStorage.setItem('em_print_w', w);
+            localStorage.setItem('em_print_h', h);
+            alert('บันทึกขนาดเอกสารติดหน้ากล่องเรียบร้อยแล้ว');
         }
     </script>
 </body>
